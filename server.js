@@ -11,6 +11,8 @@ const morgan = require("morgan");
 const port = process.env.PORT ? process.env.PORT : "3000";
 const authController = require("./controllers/auth.js");
 const session = require('express-session');
+const MongoStore = require("connect-mongo");
+
 
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -26,12 +28,16 @@ app.use(methodOverride("_method"));
 // Morgan for logging HTTP requests
 app.use(morgan('dev'));
 app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: true,
-    })
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+    }),
+  })
 );
+
 
 
 // GET / (landing page)
