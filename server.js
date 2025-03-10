@@ -12,6 +12,7 @@ const port = process.env.PORT ? process.env.PORT : "3000";
 const authController = require("./controllers/auth.js");
 const session = require('express-session');
 const MongoStore = require("connect-mongo");
+const isSignedIn = require("./middleware/is-signed-in.js");
 
 
 
@@ -49,15 +50,14 @@ app.get("/", async (req, res) => {
 
 app.use("/auth", authController); // funnel any requests with /auth to the authController
 
+app.get("/vip-lounge", isSignedIn, (req, res) => {
+    res.send(`Welcome to the party ${req.session.user.username}.`);
+  });
+  
+  
+
+  
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
 
-app.get("/vip-lounge", (req, res) => {
-    if (req.session.user) {
-      res.send(`Welcome to the party ${req.session.user.username}.`);
-    } else {
-      res.send("Sorry, no guests allowed.");
-    }
-  });
-  
