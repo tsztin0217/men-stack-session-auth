@@ -13,6 +13,7 @@ const authController = require("./controllers/auth.js");
 const session = require('express-session');
 const MongoStore = require("connect-mongo");
 const isSignedIn = require("./middleware/is-signed-in.js");
+const passUserToView = require("./middleware/pass-user-to-view.js");
 
 
 
@@ -39,14 +40,13 @@ app.use(
   })
 );
 
-
+app.use(passUserToView);
 
 // GET / (landing page)
-app.get("/", async (req, res) => {
-    res.render("index.ejs", {
-        user: req.session.user,
-    });
-});
+app.get("/", (req, res) => {
+    res.render("index.ejs");
+  });
+  
 
 app.use("/auth", authController); // funnel any requests with /auth to the authController
 
